@@ -2,6 +2,8 @@ import argparse
 import time
 from collections import defaultdict
 from pathlib import Path
+from datetime import datetime
+import os
 
 import cv2
 import numpy as np
@@ -83,10 +85,16 @@ def run(
                                                                 cv2.CAP_PROP_FRAME_HEIGHT, 
                                                                 cv2.CAP_PROP_FPS
                                        ))
-    save_dir = increment_path(Path("output") / "exp", exist_ok)
-    save_dir.mkdir(parents=True, exist_ok=True)
+    curr_ts = datetime.now()
+    str_curr_date = curr_ts.strftime("%Y%m%d")
+    str_curr_ts = curr_ts.strftime("%Y%m%d_%H%M%S")
+
+    save_dir = f'/mnt/data/machine_learning/output/{str_curr_date}'
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
+
     codec = "mp4v"
-    video_writer = cv2.VideoWriter(str(save_dir / f"{Path(source).stem}.mp4"),
+    video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
                         cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
     
 
@@ -168,6 +176,8 @@ def run(
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
+
+        print(f"FPS : {fps:.2f}")
         
     video_writer.release()
     VideoCapture.release()
