@@ -63,8 +63,12 @@ def run(
     """
 
     # Check source path
-    if not Path(source).exists():
-        raise FileNotFoundError(f"Source path '{source}' does not exist.")
+    if source == 'rtsp':
+        source = "rtsp://admin:KGMJLP@103.167.31.202:554/H.264"
+    
+    else:
+        if not Path(source).exists():
+            raise FileNotFoundError(f"Source path '{source}' does not exist.")
     
     # Setup Model
     model = YOLO(f"{weights}")
