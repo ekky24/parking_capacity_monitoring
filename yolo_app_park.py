@@ -4,6 +4,7 @@ from collections import defaultdict
 from pathlib import Path
 from datetime import datetime
 import os
+import torch
 
 import cv2
 import numpy as np
@@ -63,6 +64,8 @@ def run(
         region_thickness (int): Region thickness.
         max_parking_cap (int) : Maximum parking capacity
     """
+    save_interval = 60
+    save_start_time = time.time()
 
     # Check source path
     if source == 'rtsp':
@@ -74,7 +77,15 @@ def run(
     
     # Setup Model
     model = YOLO(f"{weights}")
-    model.to("cuda") if device == "0" else model.to("cpu")
+    
+    if torch.cuda.is_available():
+        print("GPU is available.")
+        device = torch.device('cuda')
+    else:
+        print("GPU is not available, using CPU.")
+        device = torch.device('cpu')
+
+    model.to(device)
 
     # Extract class names
     names = model.model.names
@@ -87,21 +98,24 @@ def run(
                                        ))
     curr_ts = datetime.now()
     str_curr_date = curr_ts.strftime("%Y%m%d")
-    str_curr_ts = curr_ts.strftime("%Y%m%d_%H%M%S")
 
     save_dir = f'/mnt/data/machine_learning/output/{str_curr_date}'
+    # save_dir = f'output/{str_curr_date}'
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
 
     codec = "mp4v"
+
+    str_curr_ts = curr_ts.strftime("%Y%m%d_%H%M%S")
     video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
-                        cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
-    
+                cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
 
     # Iterate and analyze over video frames
     prev_time = 0
     
     while VideoCapture.isOpened():
+        save_curr_time = time.time()
+
         sucess, frame = VideoCapture.read()
         if not sucess:
             break
@@ -176,10 +190,28 @@ def run(
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
+        
+        # save output
+        if save_curr_time - save_start_time >= save_interval:
+            updated_ts = datetime.now()
+            str_curr_ts = updated_ts.strftime("%Y%m%d_%H%M%S")
 
+            save_start_time = save_curr_time
+            video_writer.release()
+
+            if curr_ts.date() != updated_ts.date():
+                curr_ts = updated_ts
+                str_curr_date = curr_ts.strftime("%Y%m%d")
+                save_dir = f'/mnt/data/machine_learning/output/{str_curr_date}'
+                # save_dir = f'output/{str_curr_date}'
+                if not os.path.isdir(save_dir):
+                    os.makedirs(save_dir)
+
+            video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
+                        cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
+            
         print(f"FPS : {fps:.2f}")
         
-    video_writer.release()
     VideoCapture.release()
     cv2.destroyAllWindows()
 
