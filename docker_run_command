@@ -1,0 +1,1 @@
+docker run --name parking_monitoring --gpus all --rm -it parking_monitoring:v0.1 /bin/bash
