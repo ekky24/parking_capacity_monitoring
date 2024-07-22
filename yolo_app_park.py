@@ -14,8 +14,10 @@ from shapely.geometry.point import Point
 from ultralytics import YOLO
 from ultralytics.utils.files import increment_path
 from ultralytics.utils.plotting import Annotator, colors
+import sqlalchemy as db
+import pandas as pd
 
-
+from data.db_credentials import DB_CONFIG
 
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
@@ -99,8 +101,8 @@ def run(
     curr_ts = datetime.now()
     str_curr_date = curr_ts.strftime("%Y%m%d")
 
-    save_dir = f'/mnt/data/machine_learning/output/{str_curr_date}'
-    # save_dir = f'output/{str_curr_date}'
+    # save_dir = f'/mnt/data/machine_learning/output/{str_curr_date}'
+    save_dir = f'output/{str_curr_date}'
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
 
@@ -178,20 +180,8 @@ def run(
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 255, 0), 1, cv2.LINE_AA)
         
         # parking_left = parking_capacity
-
-        if view_img:
-            cv2.imshow("Crowd Counter POC", frame)
         
-        if save_img:
-            video_writer.write(frame)
-        
-        for region in counting_region: # Reinitialize counter 
-            region["counts"] = 0
-
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
-        
-        # save output
+        # save output and db
         if save_curr_time - save_start_time >= save_interval:
             updated_ts = datetime.now()
             str_curr_ts = updated_ts.strftime("%Y%m%d_%H%M%S")
@@ -209,8 +199,33 @@ def run(
 
             video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
                         cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
-            
+
+            # save db
+            new_data = {
+                'current_occupancy': [],
+                'max_capacity': [],
+            }
+            new_data['current_occupancy'].append(region["counts"])
+            new_data['max_capacity'].append(parking_capacity)
+            new_data_df = pd.DataFrame(new_data)
+
+            engine = db.create_engine(f"mysql+mysqlconnector://{DB_CONFIG['username']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/cctv",echo=False)
+            new_data_df.to_sql('parking_monitoring', con=engine, if_exists="append", index=False)
+            engine.dispose()
+
         print(f"FPS : {fps:.2f}")
+
+        if view_img:
+            cv2.imshow("Crowd Counter POC", frame)
+        
+        if save_img:
+            video_writer.write(frame)
+        
+        for region in counting_region: # Reinitialize counter 
+            region["counts"] = 0
+
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
         
     VideoCapture.release()
     cv2.destroyAllWindows()
