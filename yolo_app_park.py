@@ -35,7 +35,6 @@ def run(
         classes=None,
         line_thickness=2,
         region_thickness=2,
-        parking_capacity=10,
         area=None
 ):
     """
@@ -157,7 +156,7 @@ def run(
                             
 
         # Draw regions (Polygons/Rectangles)
-        for region in counting_region:
+        for counter_idx, region in enumerate(counting_region):
             region_label = str(region["counts"])
             region_color = region["region_color"]
             region_text_color = region["text_color"]
@@ -182,14 +181,12 @@ def run(
             )
             cv2.polylines(frame, [polygon_coords], isClosed=True, color=region_color, thickness=region_thickness)
         
-        # Parking left
-        # x, y = region["polygon"].exterior.coords.xy
-        parking_left = parking_capacity - region["counts"]
-        cv2.putText(frame, f"Parking available : {parking_left}", (int(frame_w/2), 20), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 255, 0), 1, cv2.LINE_AA)
-        
-        # parking_left = parking_capacity
-        
+            # Parking left
+            # x, y = region["polygon"].exterior.coords.xy
+            parking_left = config.LOCATION_CONF[area]['max_capacity'][counter_idx] - region["counts"]
+            cv2.putText(frame, f"Parking available : {parking_left}", (int(frame_w/2), 20), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 255, 0), 1, cv2.LINE_AA)
+                
         # save output and db
         if save_curr_time - save_start_time >= save_interval:
             updated_ts = datetime.now()
@@ -215,9 +212,12 @@ def run(
                 'max_capacity': [],
                 'area': [],
             }
-            new_data['current_occupancy'].append(region["counts"])
-            new_data['max_capacity'].append(parking_capacity)
-            new_data['area'].append(cctv_area)
+
+            for i, region in enumerate(counting_region):
+                new_data['current_occupancy'].append(region["counts"])
+                new_data['max_capacity'].append(config.LOCATION_CONF[area]['max_capacity'][i])
+                new_data['area'].append(region["name"])
+
             new_data_df = pd.DataFrame(new_data)
 
             engine = db.create_engine(f"mysql+mysqlconnector://{DB_CONFIG['username']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/cctv",echo=False)
@@ -253,7 +253,6 @@ def parse_opt():
     parser.add_argument("--classes", nargs="+", type=int, help="filter by class: --classes 0, or --classes 0 2 3")
     parser.add_argument("--line-thickness", type=int, default=2, help="bounding box thickness")
     parser.add_argument("--region-thickness", type=int, default=4, help="Region thickness")
-    parser.add_argument("--parking-capacity", type=int, default=10, help="Maximum parking capacity")
     parser.add_argument("--area", type=str, default="", help="CCTV location")
 
     return parser.parse_args()
