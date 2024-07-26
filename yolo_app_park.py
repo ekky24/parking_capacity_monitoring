@@ -106,6 +106,8 @@ def run(
                                                                 cv2.CAP_PROP_FRAME_HEIGHT, 
                                                                 cv2.CAP_PROP_FPS
                                        ))
+    
+    frame_w, frame_h = 1280, 720
     curr_ts = datetime.now()
     str_curr_date = curr_ts.strftime("%Y%m%d")
 
@@ -129,7 +131,8 @@ def run(
         sucess, frame = VideoCapture.read()
         if not sucess:
             break
-
+        
+        frame = cv2.resize(frame, (frame_w, frame_h))
         curr_time = time.time()
         fps = 1 / (curr_time - prev_time)
         prev_time = curr_time
@@ -184,8 +187,8 @@ def run(
             # Parking left
             # x, y = region["polygon"].exterior.coords.xy
             parking_left = config.LOCATION_CONF[area]['max_capacity'][counter_idx] - region["counts"]
-            cv2.putText(frame, f"Parking available : {parking_left}", (int(frame_w/2), 20), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 255, 0), 1, cv2.LINE_AA)
+            # cv2.putText(frame, f"Parking available : {parking_left}", (int(frame_w/2), 20), 
+                        # cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 255, 0), 1, cv2.LINE_AA)
                 
         # save output and db
         if save_curr_time - save_start_time >= save_interval:

@@ -1,1 +1,2 @@
-docker run --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="sol" --name parking_monitoring -v /mnt/data/machine_learning/output:/app/output --gpus all --rm -it parking_monitoring:v0.3 /bin/bash
+docker run --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="sol" --name parking_monitoring -v /mnt/data/machine_learning/output:/app/output --gpus all -d --restart on-failure parking_monitoring:v0.4
+# docker run --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="sol" --name parking_monitoring -v /mnt/data/machine_learning/output:/app/output --gpus all --rm -it parking_monitoring:v0.4 /bin/bash
