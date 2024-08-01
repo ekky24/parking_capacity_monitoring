@@ -8,11 +8,10 @@ Realtime monitoring parking capacity using CCTV / Camera Surveillance
 '''
 ## Deployment
 
-To deploy this project run
-
-```bash
-  python "yolo_app_park.py" --source "CCTV 2.mp4" --view-img --save-img --device 0 --weights "yolov8m.pt" --classes 2 --parking-capacity 15
-```
+To deploy this project:
+1. Git pull
+2. Obsfucate (run obsfute shell)
+3. Deploy docker (run deployment shell)
 
 parameters
 ```
