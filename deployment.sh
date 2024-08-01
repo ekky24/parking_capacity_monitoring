@@ -1,5 +1,5 @@
 #!/bin/bash
-NV="v0.7"
+NV="v1.0"
 docker build -t parking_monitoring:$NV .
 
 # Tahu Sumedang
@@ -26,6 +26,6 @@ docker run --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="sol" --name
 docker rm parking_monitoring_stb
 docker run --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="stb" --name parking_monitoring_stb -v /mnt/data/machine_learning/output:/app/output --gpus all -d --restart unless-stopped parking_monitoring:$NV
 
-# Toilet
-docker rm parking_monitoring_toilet
-docker run --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="toilet" --name parking_monitoring_toilet -v /mnt/data/machine_learning/output:/app/output --gpus all -d --restart unless-stopped parking_monitoring:$NV
+# Masjid
+docker rm parking_monitoring_masjid
+docker run --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="masjid" --name parking_monitoring_masjid -v /mnt/data/machine_learning/output:/app/output --gpus all -d --restart unless-stopped parking_monitoring:$NV

@@ -27,7 +27,7 @@ LOCATION_CONF = {
         'region': [
             {
                 "name": "mcd_1",
-                "polygon": Polygon([(716, 281), (621, 221), (69, 314), (131, 456)]),  # Polygon points
+                "polygon": Polygon([(691, 279), (572, 240), (82, 315), (145, 435)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -69,8 +69,8 @@ LOCATION_CONF = {
         'region': [
             {
                 "name": "cig_1",
-                "polygon": Polygon([(1242, 441), (670, 368), (429, 329), (270, 291), (1207,313),
-                                    (167, 290), (237, 235), (393, 230), (790, 258)]),  # Polygon points
+                "polygon": Polygon([(1182, 337), (1218, 448), (160, 278), 
+                                    (235, 238), (553, 237)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -113,7 +113,7 @@ LOCATION_CONF = {
             },
             {
                 "name": "stb_2",
-                "polygon": Polygon([(305, 242), (109, 216), (8, 364), (300, 416)]),  # Polygon points
+                "polygon": Polygon([(305, 212), (109, 216), (8, 364), (300, 416)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -121,15 +121,15 @@ LOCATION_CONF = {
             },
         ]
     },
-    'toilet': {
+    'masjid': {
         'host': '182.0.23.101:554/ch2/main',
         'username': 'admin',
         'password': 'XNJELA',
-        'area': 'toilet',
+        'area': 'masjid',
         'max_capacity': [6,7],
         'region': [
             {
-                "name": "toilet_1",
+                "name": "masjid_1",
                 "polygon": Polygon([(1264, 410), (934, 455), (717, 210), (878, 170), (1013, 213)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
@@ -137,7 +137,7 @@ LOCATION_CONF = {
                 "text_color": (0, 0, 0) # Region text color
             },
             {
-                "name": "toilet_2",
+                "name": "masjid_2",
                 "polygon": Polygon([(432, 489), (438, 272), (382, 181), (219, 174), (28, 501)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
