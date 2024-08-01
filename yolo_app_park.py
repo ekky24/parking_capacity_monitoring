@@ -1,9 +1,14 @@
+import sys
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+previous_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+sys.path.append(previous_dir)
+
 import argparse
 import time
 from collections import defaultdict
 from pathlib import Path
 from datetime import datetime
-import os
 import torch
 
 import cv2
@@ -18,7 +23,7 @@ import sqlalchemy as db
 import pandas as pd
 
 from data.db_credentials import DB_CONFIG
-import config
+import dist.config as config
 
 import os
 import shutil
