@@ -255,7 +255,7 @@ def run(
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
-        time.sleep(0.01)
+        time.sleep(0.05)
         
     VideoCapture.release()
     cv2.destroyAllWindows()
