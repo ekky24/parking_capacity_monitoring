@@ -1,5 +1,5 @@
 #!/bin/bash
-NV="v1.2"
+NV="v1.3"
 docker build -t parking_monitoring:$NV .
 
 # Tahu Sumedang

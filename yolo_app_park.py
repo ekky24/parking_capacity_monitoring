@@ -63,7 +63,7 @@ def run(
         region_thickness (int): Region thickness.
         max_parking_cap (int) : Maximum parking capacity
     """
-    save_interval = 60
+    save_interval = 30
     save_start_time = time.time()
 
     # Check source path
