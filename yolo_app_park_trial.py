@@ -23,7 +23,8 @@ import sqlalchemy as db
 import pandas as pd
 
 from data.db_credentials import DB_CONFIG
-import dist.config as config
+# import dist.config as config
+import config
 
 import os
 import shutil
