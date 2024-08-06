@@ -259,7 +259,7 @@ def generate_frames(
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
         
-        frame = cv2.resize(frame, (640, 480))
+        frame = cv2.resize(frame, (640, 360))
 
         encode_param = [int(cv2.IMWRITE_WEBP_QUALITY), 70]
         ret, buffer = cv2.imencode('.webp', frame, encode_param)
