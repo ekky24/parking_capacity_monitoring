@@ -111,7 +111,7 @@ def generate_frames(
 
     # Video Setup
     VideoCapture = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
-    VideoCapture.set(cv2.CAP_PROP_BUFFERSIZE, 3)
+    # VideoCapture.set(cv2.CAP_PROP_BUFFERSIZE, 3)
     frame_w, frame_h, fps = (int(VideoCapture.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, 
                                                                 cv2.CAP_PROP_FRAME_HEIGHT, 
                                                                 cv2.CAP_PROP_FPS
@@ -259,10 +259,9 @@ def generate_frames(
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
         
-        # Encode the frame as JPEG
-        frame = cv2.resize(frame, (320, 180))
+        frame = cv2.resize(frame, (640, 480))
 
-        encode_param = [int(cv2.IMWRITE_WEBP_QUALITY), 30]
+        encode_param = [int(cv2.IMWRITE_WEBP_QUALITY), 70]
         ret, buffer = cv2.imencode('.webp', frame, encode_param)
         if not ret:
             continue
