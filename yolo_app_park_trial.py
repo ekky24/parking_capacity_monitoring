@@ -269,7 +269,7 @@ def generate_frames(
         frame = buffer.tobytes()
         # Yield the frame in MJPEG format
         yield (b'--frame\r\n'
-                   b'Content-Type: image/webp\r\n\r\n' + frame + b'\r\n')
+                   b'Content-Type: image/webp\r\n\r\n' + frame + b'\r\n')
 
         # time.sleep(0.05)
         
