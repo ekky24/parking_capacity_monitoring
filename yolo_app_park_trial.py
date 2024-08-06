@@ -260,15 +260,18 @@ def generate_frames(
             break
         
         # Encode the frame as JPEG
-        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = cv2.resize(frame, (320, 180))
+
+        encode_param = [int(cv2.IMWRITE_WEBP_QUALITY), 30]
+        ret, buffer = cv2.imencode('.webp', frame, encode_param)
         if not ret:
             continue
         frame = buffer.tobytes()
         # Yield the frame in MJPEG format
         yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                   b'Content-Type: image/webp\r\n\r\n' + frame + b'\r\n')
 
-        time.sleep(0.05)
+        # time.sleep(0.05)
         
     VideoCapture.release()
     cv2.destroyAllWindows()
