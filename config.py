@@ -48,7 +48,7 @@ LOCATION_CONF = {
         'username': 'admin',
         'password': 'WCMWNA',
         'area': 'spklu',
-        'max_capacity': [9],
+        'max_capacity': [4],
         'region': [
             {
                 "name": "spklu_1",
