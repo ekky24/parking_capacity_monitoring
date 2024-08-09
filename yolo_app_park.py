@@ -108,7 +108,7 @@ def run(
 
     # Video Setup
     VideoCapture = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
-    VideoCapture.set(cv2.CAP_PROP_FPS, 5)
+    VideoCapture.set(cv2.CAP_PROP_FPS, 12)
     frame_w, frame_h, fps = (int(VideoCapture.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, 
                                                                 cv2.CAP_PROP_FRAME_HEIGHT, 
                                                                 cv2.CAP_PROP_FPS
