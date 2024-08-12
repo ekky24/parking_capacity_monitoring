@@ -64,7 +64,6 @@ def run(
         max_parking_cap (int) : Maximum parking capacity
     """
     save_interval = 30
-    save_start_time = time.time()
 
     # Check source path
     if source == 'rtsp':
@@ -108,7 +107,7 @@ def run(
 
     # Video Setup
     VideoCapture = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
-    VideoCapture.set(cv2.CAP_PROP_FPS, 12)
+    VideoCapture.set(cv2.CAP_PROP_FPS, config.FRAME_RATE)
     frame_w, frame_h, fps = (int(VideoCapture.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, 
                                                                 cv2.CAP_PROP_FRAME_HEIGHT, 
                                                                 cv2.CAP_PROP_FPS
@@ -132,6 +131,7 @@ def run(
 
     # Iterate and analyze over video frames
     prev_time = 0
+    save_start_time = time.time()
     
     while VideoCapture.isOpened():
         save_curr_time = time.time()
@@ -210,8 +210,12 @@ def run(
             save_start_time = save_curr_time
             video_writer.release()
 
-            # move file to final dir
-            shutil.move(source_vid_path, dest_vid_path)
+            # check if file video is corrupt
+            if os.path.exists(source_vid_path):
+                file_size = os.path.getsize(source_vid_path)
+                if file_size > config.FILE_SIZE_THRESHOLD * 1024:
+                    # move file to final dir
+                    shutil.move(source_vid_path, dest_vid_path)
 
             if curr_ts.date() != updated_ts.date():
                 curr_ts = updated_ts
