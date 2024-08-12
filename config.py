@@ -60,17 +60,35 @@ LOCATION_CONF = {
             },
         ]
     },
-    'cig': {
+    'cig_1': {
         'host': '182.0.23.170:554/ch1/main',
         'username': 'admin',
         'password': 'FNZLLZ',
-        'area': 'cig',
-        'max_capacity': [15],
+        'area': 'cig_1',
+        'max_capacity': [8],
         'region': [
             {
                 "name": "cig_1",
-                "polygon": Polygon([(1182, 337), (1218, 448), (160, 278), 
-                                    (235, 238), (553, 237)]),  # Polygon points
+                "polygon": Polygon([(422, 331), (419, 302), (561, 247), 
+                                    (1168, 344), (1212, 465)]),  # Polygon points
+                "counts": 0,
+                "draggin": False,
+                "region_color": (37, 255, 255), # BGR value
+                "text_color": (0, 0, 0) # Region text color
+            },
+        ]
+    },
+    'cig_2': {
+        'host': '182.0.23.170:554/ch2/main',
+        'username': 'admin',
+        'password': 'FNZLLZ',
+        'area': 'cig_2',
+        'max_capacity': [7],
+        'region': [
+            {
+                "name": "cig_2",
+                "polygon": Polygon([(564, 460), (844, 323), (304, 241), 
+                                    (77, 332)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -148,5 +166,5 @@ LOCATION_CONF = {
     },
 }
 
-FILE_SIZE_THRESHOLD = 500
+FILE_SIZE_THRESHOLD = 800
 FRAME_RATE = 12
