@@ -110,8 +110,8 @@ def generate_frames(
     names = model.model.names
 
     # Video Setup
-    VideoCapture = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
-    # VideoCapture.set(cv2.CAP_PROP_BUFFERSIZE, 3)
+    VideoCapture = cv2.VideoCapture(source)
+    VideoCapture.set(cv2.CAP_PROP_FPS, config.FRAME_RATE)
     frame_w, frame_h, fps = (int(VideoCapture.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, 
                                                                 cv2.CAP_PROP_FRAME_HEIGHT, 
                                                                 cv2.CAP_PROP_FPS
@@ -142,7 +142,18 @@ def generate_frames(
         sucess, frame = VideoCapture.read()
         if not sucess:
             print('INFO: Video capture failed')
-            break
+
+            # clearing tmp
+            try:
+                os.remove(f"{save_dir}/{str_curr_ts}.mp4")
+            except FileNotFoundError:
+                print(f"File not found.")
+            except PermissionError:
+                print(f"Permission denied to delete.")
+            except Exception as e:
+                print(f"Error occurred while trying to delete: {e}")
+
+            continue
         
         frame = cv2.resize(frame, (frame_w, frame_h))
         curr_time = time.time()
@@ -269,38 +280,9 @@ def generate_frames(
         # Yield the frame in MJPEG format
         yield (b'--frame\r\n'
                    b'Content-Type: image/webp\r\n\r\n' + frame + b'\r\n')
-
-        # time.sleep(0.05)
         
     VideoCapture.release()
     cv2.destroyAllWindows()
-
-    # clearing tmp
-    try:
-        os.remove(f"{save_dir}/{str_curr_ts}.mp4")
-    except FileNotFoundError:
-        print(f"File not found.")
-    except PermissionError:
-        print(f"Permission denied to delete.")
-    except Exception as e:
-        print(f"Error occurred while trying to delete: {e}")
-
-def parse_opt():
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", type=str, default="yolov8n.pt", help="initial weights path")
-    parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
-    parser.add_argument("--source", type=str, required=True, help="video file path")
-    parser.add_argument("--view-img", action="store_true", help="show results")
-    parser.add_argument("--save-img", action="store_true", help="save results")
-    parser.add_argument("--exist-ok", action="store_true", help="existing project/name ok, do not increment")
-    parser.add_argument("--classes", nargs="+", type=int, help="filter by class: --classes 0, or --classes 0 2 3")
-    parser.add_argument("--line-thickness", type=int, default=2, help="bounding box thickness")
-    parser.add_argument("--region-thickness", type=int, default=4, help="Region thickness")
-    parser.add_argument("--area", type=str, default="", help="CCTV location")
-
-    return parser.parse_args()
-
 
 @app.route('/video_feed')
 def video_feed():

@@ -139,7 +139,18 @@ def run(
         sucess, frame = VideoCapture.read()
         if not sucess:
             print('INFO: Video capture failed')
-            break
+
+            # clearing tmp
+            try:
+                os.remove(f"{save_dir}/{str_curr_ts}.mp4")
+            except FileNotFoundError:
+                print(f"File not found.")
+            except PermissionError:
+                print(f"Permission denied to delete.")
+            except Exception as e:
+                print(f"Error occurred while trying to delete: {e}")
+
+            continue
         
         frame = cv2.resize(frame, (frame_w, frame_h))
         curr_time = time.time()
@@ -262,16 +273,6 @@ def run(
         
     VideoCapture.release()
     cv2.destroyAllWindows()
-
-    # clearing tmp
-    try:
-        os.remove(f"{save_dir}/{str_curr_ts}.mp4")
-    except FileNotFoundError:
-        print(f"File not found.")
-    except PermissionError:
-        print(f"Permission denied to delete.")
-    except Exception as e:
-        print(f"Error occurred while trying to delete: {e}")
 
 def parse_opt():
     """Parse command line arguments."""
