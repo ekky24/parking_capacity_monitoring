@@ -224,8 +224,12 @@ def generate_frames(
             save_start_time = save_curr_time
             video_writer.release()
 
-            # move file to final dir
-            shutil.move(source_vid_path, dest_vid_path)
+            # check if file video is corrupt
+            if os.path.exists(source_vid_path):
+                file_size = os.path.getsize(source_vid_path)
+                if file_size > config.FILE_SIZE_THRESHOLD * 1024:
+                    # move file to final dir
+                    shutil.move(source_vid_path, dest_vid_path)
 
             if curr_ts.date() != updated_ts.date():
                 curr_ts = updated_ts

@@ -14,4 +14,4 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 EXPOSE 5050
 
-CMD ["python", "dist/yolo_app_park_trial_2.py"]
+ENTRYPOINT ["./gunicorn.sh"]
