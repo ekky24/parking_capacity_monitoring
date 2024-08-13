@@ -34,6 +34,34 @@ os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 current_region = None
 app = Flask(__name__)
 
+def cleaning(VideoCapture, cv2, save_dir, str_curr_ts):
+    VideoCapture.release()
+    cv2.destroyAllWindows()
+
+    # clearing tmp
+    try:
+        os.remove(f"{save_dir}/{str_curr_ts}.mp4")
+    except FileNotFoundError:
+        print(f"File not found.")
+    except PermissionError:
+        print(f"Permission denied to delete.")
+    except Exception as e:
+        print(f"Error occurred while trying to delete: {e}")
+
+def connect_rtsp(source, codec, frame_w, frame_h, save_dir, str_curr_ts):
+    # Video Setup
+    VideoCapture = cv2.VideoCapture(source)
+    VideoCapture.set(cv2.CAP_PROP_FPS, config.FRAME_RATE)
+    frame_w_0, frame_h_0, fps = (int(VideoCapture.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, 
+                                                                cv2.CAP_PROP_FRAME_HEIGHT, 
+                                                                cv2.CAP_PROP_FPS
+                                       ))
+
+    video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
+                cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
+    
+    return VideoCapture, video_writer
+
 def generate_frames(
         weights="yolov10m.pt",
         source=None,
@@ -108,18 +136,12 @@ def generate_frames(
 
     # Extract class names
     names = model.model.names
+    codec = "mp4v"
 
-    # Video Setup
-    VideoCapture = cv2.VideoCapture(source)
-    VideoCapture.set(cv2.CAP_PROP_FPS, config.FRAME_RATE)
-    frame_w, frame_h, fps = (int(VideoCapture.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, 
-                                                                cv2.CAP_PROP_FRAME_HEIGHT, 
-                                                                cv2.CAP_PROP_FPS
-                                       ))
-    
     frame_w, frame_h = 1280, 720
     curr_ts = datetime.now()
     str_curr_date = curr_ts.strftime("%Y%m%d")
+    str_curr_ts = curr_ts.strftime("%Y%m%d_%H%M%S")
 
     # save_dir = f'output/parking_monitoring/{cctv_area}/{str_curr_date}'
     save_dir = f'output/parking_monitoring/tmp/{cctv_area}/{str_curr_date}'
@@ -127,31 +149,21 @@ def generate_frames(
         os.makedirs(save_dir)
         os.makedirs(save_dir.replace('/tmp', ''))
 
-    codec = "mp4v"
-
-    str_curr_ts = curr_ts.strftime("%Y%m%d_%H%M%S")
-    video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
-                cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
+    VideoCapture, video_writer = connect_rtsp(source, codec, frame_w, frame_h, save_dir, str_curr_ts)
 
     # Iterate and analyze over video frames
     prev_time = 0
     
-    while VideoCapture.isOpened():
+    while True:
         save_curr_time = time.time()
 
         sucess, frame = VideoCapture.read()
         if not sucess:
             print('INFO: Video capture failed')
 
-            # clearing tmp
-            try:
-                os.remove(f"{save_dir}/{str_curr_ts}.mp4")
-            except FileNotFoundError:
-                print(f"File not found.")
-            except PermissionError:
-                print(f"Permission denied to delete.")
-            except Exception as e:
-                print(f"Error occurred while trying to delete: {e}")
+            # reconnecting and cleaning
+            cleaning(VideoCapture, cv2, save_dir, str_curr_ts)
+            VideoCapture, video_writer = connect_rtsp(source, codec, frame_w, frame_h, save_dir, str_curr_ts)
 
             continue
         
@@ -284,9 +296,8 @@ def generate_frames(
         # Yield the frame in MJPEG format
         yield (b'--frame\r\n'
                    b'Content-Type: image/webp\r\n\r\n' + frame + b'\r\n')
-        
-    VideoCapture.release()
-    cv2.destroyAllWindows()
+
+    cleaning(VideoCapture, cv2, save_dir, str_curr_ts)
 
 @app.route('/video_feed')
 def video_feed():
