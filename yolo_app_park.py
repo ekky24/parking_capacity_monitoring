@@ -93,7 +93,7 @@ def run(
         max_parking_cap (int) : Maximum parking capacity
     """
     save_interval = 30
-    rtsp_server_url = f"rtsp://localhost:8554/{area}"
+    rtsp_server_url = f"rtsp://localhost:8554/parking_monitoring/{area}"
     ffmpeg_command = [
         'ffmpeg',
         '-y',  # Overwrite output files
