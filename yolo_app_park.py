@@ -27,6 +27,7 @@ import dist.config as config
 
 import os
 import shutil
+import subprocess
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 current_region = None
@@ -92,6 +93,21 @@ def run(
         max_parking_cap (int) : Maximum parking capacity
     """
     save_interval = 30
+    rtsp_server_url = f"rtsp://localhost:8554/{area}"
+    ffmpeg_command = [
+        'ffmpeg',
+        '-y',  # Overwrite output files
+        '-f', 'rawvideo',  # Input format
+        '-vcodec', 'rawvideo',
+        '-pix_fmt', 'bgr24',  # Pixel format
+        '-s', '640x360',  # Frame size
+        '-r', '30',  # Frame rate
+        '-i', '-',  # Input from stdin
+        '-c:v', 'libx264',  # Video codec
+        '-pix_fmt', 'yuv420p',  # Output pixel format
+        '-f', 'rtsp',  # Output format
+        rtsp_server_url  # Output URL
+    ]
 
     # Check source path
     if source == 'rtsp':
@@ -158,8 +174,9 @@ def run(
     # Iterate and analyze over video frames
     prev_time = 0
     save_start_time = time.time()
+    process = subprocess.Popen(ffmpeg_command, stdin=subprocess.PIPE)
     
-    while VideoCapture.isOpened():
+    while True:
         save_curr_time = time.time()
 
         sucess, frame = VideoCapture.read()
@@ -279,6 +296,10 @@ def run(
 
         print(f"FPS : {fps:.2f}")
 
+        # Send to RTSP Stream 
+        frame_resize = cv2.resize(frame, (640, 360))
+        process.stdin.write(frame_resize.tobytes())
+
         if view_img:
             cv2.imshow("Crowd Counter POC", frame)
         
@@ -292,6 +313,8 @@ def run(
             break
         
     cleaning(VideoCapture, cv2, save_dir, str_curr_ts)
+    process.stdin.close()
+    process.wait()
 
 def parse_opt():
     """Parse command line arguments."""
