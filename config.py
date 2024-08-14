@@ -148,7 +148,7 @@ LOCATION_CONF = {
         'region': [
             {
                 "name": "masjid_1",
-                "polygon": Polygon([(1264, 410), (934, 455), (717, 210), (878, 170), (1013, 213)]),  # Polygon points
+                "polygon": Polygon([(218, 133), (21, 439), (449, 445), (398, 117)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -156,7 +156,7 @@ LOCATION_CONF = {
             },
             {
                 "name": "masjid_2",
-                "polygon": Polygon([(432, 489), (438, 272), (382, 181), (219, 174), (28, 501)]),  # Polygon points
+                "polygon": Polygon([(664, 157), (1011, 410), (1260, 365), (825, 111)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
