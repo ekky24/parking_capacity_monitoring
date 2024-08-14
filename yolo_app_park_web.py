@@ -58,7 +58,7 @@ def connect_rtsp(source, codec, frame_w, frame_h, save_dir, str_curr_ts):
                                        ))
 
     video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
-                cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
+                cv2.VideoWriter_fourcc(*codec), 12, (frame_w,frame_h))
     
     return VideoCapture, video_writer
 
@@ -252,7 +252,7 @@ def generate_frames(
                     os.makedirs(save_dir.replace('/tmp', ''))
 
             video_writer = cv2.VideoWriter(f"{save_dir}/{str_curr_ts}.mp4",
-                        cv2.VideoWriter_fourcc(*codec), fps, (frame_w,frame_h))
+                        cv2.VideoWriter_fourcc(*codec), 12, (frame_w,frame_h))
 
             # save db
             new_data = {
