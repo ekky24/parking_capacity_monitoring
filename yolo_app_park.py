@@ -92,7 +92,7 @@ def run(
         region_thickness (int): Region thickness.
         max_parking_cap (int) : Maximum parking capacity
     """
-    save_interval = 30
+    save_interval = 10
     rtsp_server_url = f"rtsp://localhost:8554/parking_monitoring/{area}"
     ffmpeg_command = [
         'ffmpeg',
@@ -101,7 +101,7 @@ def run(
         '-vcodec', 'rawvideo',
         '-pix_fmt', 'bgr24',  # Pixel format
         '-s', '640x360',  # Frame size
-        '-r', '30',  # Frame rate
+        '-r', '12',  # Frame rate
         '-i', '-',  # Input from stdin
         '-c:v', 'libx264',  # Video codec
         '-pix_fmt', 'yuv420p',  # Output pixel format
@@ -148,14 +148,6 @@ def run(
 
     # Extract class names
     names = model.model.names
-
-    # Video Setup
-    VideoCapture = cv2.VideoCapture(source)
-    VideoCapture.set(cv2.CAP_PROP_FPS, config.FRAME_RATE)
-    frame_w, frame_h, fps = (int(VideoCapture.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, 
-                                                                cv2.CAP_PROP_FRAME_HEIGHT, 
-                                                                cv2.CAP_PROP_FPS
-                                       ))
     
     frame_w, frame_h = 1280, 720
     codec = "mp4v"
