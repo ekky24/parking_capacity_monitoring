@@ -10,7 +10,7 @@ LOCATION_CONF = {
         'region': [
             {
                 "name": "tsu_1",
-                "polygon": Polygon([(983, 645), (1271, 363), (432, 27), (172, 125)]),  # Polygon points
+                "polygon": Polygon([(1120, 687), (1270, 574), (1269, 363), (549, 75), (348, 144)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -27,7 +27,7 @@ LOCATION_CONF = {
         'region': [
             {
                 "name": "mcd_1",
-                "polygon": Polygon([(691, 279), (572, 240), (82, 315), (145, 435)]),  # Polygon points
+                "polygon": Polygon([(84, 314), (145, 436), (716, 275), (581, 237)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -35,7 +35,7 @@ LOCATION_CONF = {
             },
             {
                 "name": "mcd_2",
-                "polygon": Polygon([(957, 352), (970, 300), (870, 276), (774, 341)]),  # Polygon points
+                "polygon": Polygon([(775, 342), (956, 352), (967, 292), (874, 273)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -122,8 +122,8 @@ LOCATION_CONF = {
         'region': [
             {
                 "name": "stb_1",
-                "polygon": Polygon([(1168, 688), (728, 415), (496, 230), (680, 212),
-                                    (1268, 434), (1264, 651)]),  # Polygon points
+                "polygon": Polygon([(490, 240), (467, 261), (638, 425), (1052, 706), (1275, 648),
+                                    (1275, 463), (669, 222)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
@@ -131,7 +131,7 @@ LOCATION_CONF = {
             },
             {
                 "name": "stb_2",
-                "polygon": Polygon([(305, 212), (109, 216), (8, 364), (300, 416)]),  # Polygon points
+                "polygon": Polygon([(3, 401), (318, 451), (310, 263), (90, 254)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
