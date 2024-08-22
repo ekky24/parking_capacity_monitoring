@@ -85,10 +85,11 @@ def run(
         '-vcodec', 'rawvideo',
         '-pix_fmt', 'bgr24',  # Pixel format
         '-s', '640x360',  # Frame size
-        '-r', '12',  # Frame rate
+        '-re',  # Frame rate
         '-i', '-',  # Input from stdin
         '-c:v', 'libx264',  # Video codec
         '-pix_fmt', 'yuv420p',  # Output pixel format
+        '-preset', 'veryfast',
         '-f', 'rtsp',  # Output format
         rtsp_server_url  # Output URL
     ]
@@ -146,6 +147,7 @@ def run(
     prev_time = 0
     save_start_time = time.time()
     process = subprocess.Popen(ffmpeg_command, stdin=subprocess.PIPE)
+    frame_count = 0
     
     while True:
         save_curr_time = time.time()
@@ -160,6 +162,12 @@ def run(
 
             continue
         
+        # skipping frames
+        if frame_count < config.SKIP_FRAMES:
+            frame_count += 1
+            continue
+        frame_count = 0
+
         frame = cv2.resize(frame, (frame_w, frame_h))
         curr_time = time.time()
         fps = 1 / (curr_time - prev_time)
@@ -243,7 +251,20 @@ def run(
 
         # Send to RTSP Stream 
         frame_resize = cv2.resize(frame, (640, 360))
-        process.stdin.write(frame_resize.tobytes())
+
+        try:
+            process.stdin.write(frame_resize.tobytes())
+        except:
+            # process.stdin.close()
+            # process.wait()
+            # print('err send')
+
+            # # reconnecting
+            # process = subprocess.Popen(ffmpeg_command, stdin=subprocess.PIPE)
+            # process.stdin.write(frame_resize.tobytes())
+            # continue
+
+            break
 
         if view_img:
             cv2.imshow("Crowd Counter POC", frame)
