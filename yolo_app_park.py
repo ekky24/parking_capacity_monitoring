@@ -229,6 +229,8 @@ def run(
                         # cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 255, 0), 1, cv2.LINE_AA)
                 
         if save_curr_time - save_start_time >= save_interval:
+            save_start_time = save_curr_time
+
             # save db
             new_data = {
                 'current_occupancy': [],
