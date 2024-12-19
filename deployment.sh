@@ -1,5 +1,5 @@
 #!/bin/bash
-NV="v2.6"
+NV="v2.8"
 docker build -t parking_monitoring:$NV .
 
 # # Tahu Sumedang
@@ -37,7 +37,7 @@ docker stop parking_monitoring_stb
 docker rm parking_monitoring_stb
 docker run --cpus="8" --ulimit nproc=8 --memory="2000m" --network="host" --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="stb" --name parking_monitoring_stb --gpus all -d --restart unless-stopped parking_monitoring:$NV
 
-# # Masjid
-# docker stop parking_monitoring_masjid
-# docker rm parking_monitoring_masjid
-# docker run --cpus="8" --ulimit nproc=8 --memory="2000m" --network="host" --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="masjid" --name parking_monitoring_masjid --gpus all -d --restart unless-stopped parking_monitoring:$NV
+# Toilet
+docker stop parking_monitoring_toilet
+docker rm parking_monitoring_toilet
+docker run --cpus="8" --ulimit nproc=8 --memory="2000m" --network="host" --log-opt max-size=10m --log-opt max-file=3 -e CCTV_AREA="toilet" --name parking_monitoring_toilet --gpus all -d --restart unless-stopped parking_monitoring:$NV
