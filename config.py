@@ -139,24 +139,24 @@ LOCATION_CONF = {
             },
         ]
     },
-    'masjid': {
+    'toilet': {
         'host': '182.0.23.101:554/ch2/main',
         'username': 'admin',
         'password': 'XNJELA',
-        'area': 'masjid',
+        'area': 'toilet',
         'max_capacity': [6,7],
         'region': [
             {
-                "name": "masjid_1",
-                "polygon": Polygon([(218, 133), (21, 439), (449, 445), (398, 117)]),  # Polygon points
+                "name": "toilet_1",
+                "polygon": Polygon([(269, 164), (40, 483), (372, 543), (498, 531), (449, 169)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value
                 "text_color": (0, 0, 0) # Region text color
             },
             {
-                "name": "masjid_2",
-                "polygon": Polygon([(664, 157), (1011, 410), (1260, 365), (825, 111)]),  # Polygon points
+                "name": "toilet_2",
+                "polygon": Polygon([(713, 227), (747, 252), (1086, 522), (1267, 497), (1269, 338), (946, 177)]),  # Polygon points
                 "counts": 0,
                 "draggin": False,
                 "region_color": (37, 255, 255), # BGR value

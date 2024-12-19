@@ -46,8 +46,8 @@ def click_event(event, x, y, flags, params):
 if __name__=="__main__": 
   
     # reading the image 
-    source = "rtsp://admin:WGNVQB@182.0.21.189:554/ch2/main"
-    area = 'stb'
+    source = "rtsp://admin:XNJELA@182.0.23.101:554/ch2/main"
+    area = 'toilet'
 
     counting_region = config.LOCATION_CONF[area]['region']
 
